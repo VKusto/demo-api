@@ -1,0 +1,23 @@
+{
+  "name": "demo-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VKusto/demo-api.git"
+  },
+  "author": "Valentin Kusto",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VKusto/demo-api/issues"
+  },
+  "homepage": "https://github.com/VKusto/demo-api#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
