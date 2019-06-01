@@ -27,6 +27,8 @@ app.post('/login', function (req, res) {
     var userName = req.body.user_name;
     var pw = req.body.pw;
 
+    console.log('Post login attempt User Name:' + userName);
+
     if(!userName || !pw) {
         res.send(404, 'USER_NOT_FOUND');
         return;
