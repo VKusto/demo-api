@@ -10,4 +10,4 @@ app.get('/timeStamp', function (req, res) {
     res.send(`${Date.now()}`);
 });
 
-app.listen(80);
+app.listen(process.env.PORT || 8081);
