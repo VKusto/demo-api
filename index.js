@@ -1,6 +1,18 @@
 const express = require('express'),
-    app = express();
-
+    app = express(),
+    sql = require("mssql"),
+    pool = new sql.ConnectionPool({
+        user: process.env.SQL_USER,
+        password: process.env.SQL_PASSWORD,
+        server: process.env.SQL_HOST,
+        database: process.env.SQL_DB_NAME,
+        encrypt: true,
+        pool: {
+            max: 10,
+            min: 0,
+            idleTimeoutMillis: 30000
+        }
+    });
 
 app.use(express.json());
 
@@ -33,36 +45,24 @@ app.post('/login', function (req, res) {
         res.send(404, 'USER_NOT_FOUND');
         return;
     }
-
-    var sql = require("mssql");
-
-    // config for your database
-    var config = {
-        user: process.env.SQL_USER,
-        password: process.env.SQL_PASSWORD,
-        server: process.env.SQL_HOST,
-        database: process.env.SQL_DB_NAME,
-        encrypt: true
-    };
-
+    
     // connect to your database
-    sql.connect(config, function (err) {
+    pool.connect(function (err) {
 
         if (err) {
             console.log(err);
             res.send(500, 'ERROR OF DATABASE CONNECTION: ' + err.message);
+            pool.close();
             return;
         }
 
-        // create Request object
-        var request = new sql.Request();
-
         // query to the database and get the records
-        request.query(`SELECT id FROM UserProfile WHERE user_name = '${userName}' and password_hash = '${pw}';`, function (err, data) {
+        pool.query(`SELECT id FROM UserProfile WHERE user_name = '${userName}' and password_hash = '${pw}';`, function (err, data) {
 
             if (err) {
                 console.log(err);
                 res.send(500, 'ERROR OF SQL EXECUTION: ' + err.message);
+                pool.close();
                 return;
             }
 
@@ -72,8 +72,10 @@ app.post('/login', function (req, res) {
             } else{
                 res.status(404).send('USER_NOT_FOUND');
             }
+            pool.close();
         });
     });
+
 });
 
 
